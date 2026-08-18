@@ -20,7 +20,7 @@ python -m venv atm
 ### Step 2: Activate Virtual Environment
 - **Windows (PowerShell)**:
   ```powershell
-  .\atm\Scripts\Activate.ps1
+  .\atm\Scripts\Activate.ps1  
   ```
 - **Windows (Command Prompt)**:
   ```cmd
