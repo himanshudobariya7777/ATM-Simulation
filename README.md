@@ -1,12 +1,13 @@
 # 🏧 Reserve Bank of India - ATM Simulation System (Web Browser GUI)
 
+> 👨‍💻 **Author**: **Himanshu Dobariya**  
+> 🔗 **GitHub Profile**: [@himanshudobariya7777](https://github.com/himanshudobariya7777)  
+> 📦 **GitHub Repository**: [https://github.com/himanshudobariya7777/ATM-Simulation](https://github.com/himanshudobariya7777/ATM-Simulation)
+
 A production-grade, modular, Object-Oriented Python ATM Simulation system featuring a **modern Web Browser GUI Application** (`app.py`), REST API backend (`Flask`), SQLite persistence, PBKDF2-HMAC-SHA256 salted PIN security, automatic 3-attempt account lockout protection, strict banking rules, multi-account fund transfers, administrative management, automated report generation (TXT/CSV), and a unit test suite.
 
 ---
 
-## 🚀 How to Run the Web Application
-
-### Step 1: Install Dependencies
 ## 🚀 Virtual Environment (`atm`) & Quick Start Guide
 
 ### Step 1: Create Virtual Environment (`atm`)
