@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏧 Reserve Bank of India - ATM Kiosk</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+        
+        <!-- Header Navbar -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="brand-text">
+                    <h1>RESERVE BANK OF INDIA</h1>
+                    <p>Next-Gen ATM Simulation System</p>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="live-clock" id="live-clock">17-08-2026 15:45:00</div>
+                <div class="portal-switcher">
+                    <button id="nav-customer-btn" class="nav-btn active" onclick="switchPortal('customer')">
+                        <i class="fa-solid fa-credit-card"></i> Customer ATM
+                    </button>
+                    <button id="nav-admin-btn" class="nav-btn" onclick="switchPortal('admin')">
+                        <i class="fa-solid fa-user-shield"></i> Bank Admin
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+
+            <!-- =================================================================== -->
+            <!-- 1. CUSTOMER PORTAL -->
+            <!-- =================================================================== -->
+            <section id="customer-portal" class="portal-section active">
+
+                <!-- 1A. Customer Login View -->
+                <div id="customer-login-view" class="view-card customer-login-card">
+                    <div class="kiosk-header">
+                        <div class="chip-card-slot">
+                            <i class="fa-solid fa-sim-card card-chip"></i>
+                            <span>PLEASE ENTER CARD / ACCOUNT DETAILS</span>
+                        </div>
+                    </div>
+
+                    <!-- Demo Account Quick Selector Chips -->
+                    <div class="quick-demo-accounts">
+                        <span class="demo-label"><i class="fa-solid fa-bolt"></i> Quick Demo Accounts (Click to Auto-fill Account ID & PIN):</span>
+                        <div class="demo-chips">
+                            <button class="chip" onclick="fillCustomerDemo('1001', '12345678')">1001 | PIN: 12345678 (Himanshu)</button>
+                            <button class="chip" onclick="fillCustomerDemo('1002', '87654321')">1002 | PIN: 87654321 (Rahul)</button>
+                            <button class="chip" onclick="fillCustomerDemo('1003', '11223344')">1003 | PIN: 11223344 (Jay)</button>
+                        </div>
+                    </div>
+
+                    <div class="login-split">
+                        <!-- Account & PIN Form -->
+                        <form id="customer-login-form" onsubmit="handleCustomerLogin(event)" class="login-form">
+                            <div class="form-group">
+                                <label for="cust-account-id"><i class="fa-solid fa-credit-card"></i> 4-Digit Account Number</label>
+                                <input type="text" id="cust-account-id" maxlength="4" placeholder="Enter Account ID (e.g. 1001)" required autocomplete="off">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cust-pin"><i class="fa-solid fa-lock"></i> 8-Digit Security PIN</label>
+                                <div class="pin-display-wrapper">
+                                    <input type="password" id="cust-pin" maxlength="8" placeholder="••••••••" required autocomplete="off">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                <i class="fa-solid fa-right-to-bracket"></i> Login to ATM
+                            </button>
+                        </form>
+
+                        <!-- Virtual Numeric Keypad -->
+                        <div class="virtual-keypad">
+                            <div class="keypad-title"><i class="fa-solid fa-calculator"></i> ATM Keypad</div>
+                            <div class="keypad-grid">
+                                <button type="button" class="key-btn" onclick="pressKeypad('1')">1</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('2')">2</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('3')">3</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('4')">4</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('5')">5</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('6')">6</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('7')">7</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('8')">8</button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('9')">9</button>
+                                <button type="button" class="key-btn key-danger" onclick="pressKeypad('clear')"><i class="fa-solid fa-rotate-left"></i></button>
+                                <button type="button" class="key-btn" onclick="pressKeypad('0')">0</button>
+                                <button type="button" class="key-btn key-success" onclick="pressKeypad('enter')"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1B. Customer Dashboard View -->
+                <div id="customer-dashboard-view" class="view-card customer-dashboard-card hidden">
+                    <div class="dashboard-grid">
+                        
+                        <!-- Debit Card & Balance Overview -->
+                        <div class="card-column">
+                            <div class="debit-card-graphic">
+                                <div class="card-top">
+                                    <span class="bank-name">RESERVE BANK OF INDIA</span>
+                                    <span class="card-type"><i class="fa-solid fa-wifi"></i> VISA</span>
+                                </div>
+                                <div class="card-chip-container">
+                                    <div class="card-chip-gold"></div>
+                                </div>
+                                <div class="card-number" id="card-acc-num">•••• •••• 1001</div>
+                                <div class="card-bottom">
+                                    <div class="card-holder">
+                                        <span class="label">CARDHOLDER</span>
+                                        <span class="val" id="card-holder-name">HIMANSHU</span>
+                                    </div>
+                                    <div class="card-status">
+                                        <span class="badge badge-active" id="card-status-badge">ACTIVE</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="balance-card">
+                                <span class="bal-label">AVAILABLE BALANCE</span>
+                                <div class="bal-amount" id="cust-balance-display">₹25,000.00</div>
+                                <div class="limit-indicator">
+                                    <span>Daily Limit Remaining: <strong id="cust-daily-limit-rem">₹50,000.00</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ATM Quick Action Buttons -->
+                        <div class="actions-column">
+                            <h2><i class="fa-solid fa-terminal"></i> Select Transaction</h2>
+                            
+                            <div class="action-grid">
+                                <button class="action-tile tile-withdraw" onclick="openModal('modal-withdraw')">
+                                    <div class="tile-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                                    <div class="tile-title">Withdraw Cash</div>
+                                    <p>Min ₹10,000 | Max ₹1,00,000</p>
+                                </button>
+
+                                <button class="action-tile tile-deposit" onclick="openModal('modal-deposit')">
+                                    <div class="tile-icon"><i class="fa-solid fa-vault"></i></div>
+                                    <div class="tile-title">Deposit Money</div>
+                                    <p>Instant Credit to Account</p>
+                                </button>
+
+                                <button class="action-tile tile-transfer" onclick="openModal('modal-transfer')">
+                                    <div class="tile-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                                    <div class="tile-title">Fund Transfer</div>
+                                    <p>Transfer to other Accounts</p>
+                                </button>
+
+                                <button class="action-tile tile-history" onclick="fetchCustomerHistory()">
+                                    <div class="tile-icon"><i class="fa-solid fa-receipt"></i></div>
+                                    <div class="tile-title">Transaction History</div>
+                                    <p>View & Print Receipts</p>
+                                </button>
+
+                                <button class="action-tile tile-pin" onclick="openModal('modal-pin')">
+                                    <div class="tile-icon"><i class="fa-solid fa-key"></i></div>
+                                    <div class="tile-title">Change PIN</div>
+                                    <p>Update Security PIN</p>
+                                </button>
+
+                                <button class="action-tile tile-logout" onclick="logoutCustomer()">
+                                    <div class="tile-icon"><i class="fa-solid fa-power-off"></i></div>
+                                    <div class="tile-title">Exit & Logout</div>
+                                    <p>Eject Card Safely</p>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- =================================================================== -->
+            <!-- 2. ADMIN PORTAL -->
+            <!-- =================================================================== -->
+            <section id="admin-portal" class="portal-section hidden">
+
+                <!-- 2A. Admin Login View -->
+                <div id="admin-login-view" class="view-card admin-login-card">
+                    <div class="admin-header">
+                        <i class="fa-solid fa-user-shield admin-icon"></i>
+                        <h2>Bank Administration Login</h2>
+                        <p>Authorized Officer Access Only</p>
+                    </div>
+
+                    <!-- Admin Demo Credentials Helper -->
+                    <div class="admin-demo-hint" onclick="fillAdminDemo()">
+                        <i class="fa-solid fa-key"></i> Click to Auto-fill Credentials: <strong>Username: admin | Password: admin123</strong>
+                    </div>
+
+                    <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="login-form">
+                        <div class="form-group">
+                            <label for="admin-user"><i class="fa-solid fa-user"></i> Admin Username</label>
+                            <input type="text" id="admin-user" placeholder="Enter admin username" required autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="admin-pass"><i class="fa-solid fa-lock"></i> Admin Password</label>
+                            <input type="password" id="admin-pass" placeholder="Enter admin password" required autocomplete="off">
+                        </div>
+
+                        <button type="submit" class="btn btn-warning btn-block btn-lg">
+                            <i class="fa-solid fa-shield-halved"></i> Login to Admin Panel
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 2B. Admin Dashboard View -->
+                <div id="admin-dashboard-view" class="view-card admin-dashboard-card hidden">
+                    <div class="admin-top-bar">
+                        <h2><i class="fa-solid fa-chart-line"></i> Bank Admin Control Panel</h2>
+                        <button class="btn btn-outline-danger" onclick="logoutAdmin()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Admin Logout</button>
+                    </div>
+
+                    <!-- Key Metrics Cards -->
+                    <div class="metrics-grid">
+                        <div class="metric-card metric-reserve">
+                            <div class="m-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                            <div class="m-content">
+                                <span class="m-title">Total Bank Reserve</span>
+                                <h3 id="m-reserve">₹0.00</h3>
+                            </div>
+                        </div>
+
+                        <div class="metric-card metric-accounts">
+                            <div class="m-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="m-content">
+                                <span class="m-title">Total Accounts</span>
+                                <h3 id="m-total-accounts">0</h3>
+                            </div>
+                        </div>
+
+                        <div class="metric-card metric-active">
+                            <div class="m-icon"><i class="fa-solid fa-user-check"></i></div>
+                            <div class="m-content">
+                                <span class="m-title">Active Accounts</span>
+                                <h3 id="m-active-accounts">0</h3>
+                            </div>
+                        </div>
+
+                        <div class="metric-card metric-blocked">
+                            <div class="m-icon"><i class="fa-solid fa-user-lock"></i></div>
+                            <div class="m-content">
+                                <span class="m-title">Blocked / Locked</span>
+                                <h3 id="m-blocked-accounts">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Tabs Navigation -->
+                    <div class="admin-tabs">
+                        <button class="tab-btn active" onclick="switchAdminTab('accounts-tab')"><i class="fa-solid fa-id-card"></i> Customer Accounts</button>
+                        <button class="tab-btn" onclick="switchAdminTab('create-tab')"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+                        <button class="tab-btn" onclick="switchAdminTab('audit-tab')"><i class="fa-solid fa-list-check"></i> System Audit Log</button>
+                        <button class="tab-btn" onclick="switchAdminTab('reports-tab')"><i class="fa-solid fa-file-export"></i> Reports & Downloads</button>
+                    </div>
+
+                    <!-- Tab 1: Accounts Management -->
+                    <div id="accounts-tab" class="admin-tab-content active">
+                        <div class="tab-header">
+                            <h3><i class="fa-solid fa-users-gear"></i> Customer Account Management</h3>
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="admin-search-input" placeholder="Search account ID or name..." onkeyup="filterAdminAccounts()">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Account ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                        <th>Failed Attempts</th>
+                                        <th>Created At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-accounts-tbody">
+                                    <!-- Dynamic rows via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Create Account -->
+                    <div id="create-tab" class="admin-tab-content hidden">
+                        <h3><i class="fa-solid fa-user-plus"></i> Register New Customer Account</h3>
+                        <form id="admin-create-form" onsubmit="handleAdminCreateAccount(event)" class="form-grid">
+                            <div class="form-group">
+                                <label>Account ID Number (4-Digit)</label>
+                                <input type="text" id="new-acc-id" maxlength="4" placeholder="e.g. 1021" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Customer Full Name</label>
+                                <input type="text" id="new-acc-name" placeholder="e.g. Anish Sharma" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Set 8-Digit Security PIN</label>
+                                <input type="password" id="new-acc-pin" maxlength="8" placeholder="••••••••" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Initial Deposit (₹)</label>
+                                <input type="number" id="new-acc-deposit" placeholder="0.00" min="0" step="100">
+                            </div>
+                            <div class="form-submit-row">
+                                <button type="submit" class="btn btn-success btn-lg"><i class="fa-solid fa-plus"></i> Create Account</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tab 3: Audit Log -->
+                    <div id="audit-tab" class="admin-tab-content hidden">
+                        <h3><i class="fa-solid fa-clock-rotate-left"></i> System-Wide Transaction Audit Log</h3>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Account ID</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Balance After</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-transactions-tbody">
+                                    <!-- Dynamic rows via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Reports -->
+                    <div id="reports-tab" class="admin-tab-content hidden">
+                        <h3><i class="fa-solid fa-file-lines"></i> System Reports & Data Export</h3>
+                        <div class="report-box">
+                            <p>Generate fresh text summary reports and CSV transaction audit dumps instantly.</p>
+                            <button class="btn btn-primary btn-lg" onclick="generateAdminReports()"><i class="fa-solid fa-gear"></i> Generate System Reports</button>
+                            
+                            <div id="reports-download-links" class="download-links hidden">
+                                <a id="link-txt-report" class="btn btn-outline-success" target="_blank" download><i class="fa-solid fa-file-arrow-down"></i> Download Daily Report (TXT)</a>
+                                <a id="link-csv-report" class="btn btn-outline-info" target="_blank" download><i class="fa-solid fa-file-csv"></i> Download Transactions Audit (CSV)</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- MODALS -->
+    <!-- =================================================================== -->
+
+    <!-- Modal 1: Withdraw -->
+    <div id="modal-withdraw" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-money-bill-wave"></i> Cash Withdrawal</h3>
+                <button class="close-btn" onclick="closeModal('modal-withdraw')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="quick-presets-grid">
+                    <button type="button" class="preset-btn" onclick="setWithdrawPreset(10000)">₹10,000</button>
+                    <button type="button" class="preset-btn" onclick="setWithdrawPreset(20000)">₹20,000</button>
+                    <button type="button" class="preset-btn" onclick="setWithdrawPreset(50000)">₹50,000</button>
+                    <button type="button" class="preset-btn" onclick="setWithdrawPreset(75000)">₹75,000</button>
+                    <button type="button" class="preset-btn" onclick="setWithdrawPreset(100000)">₹1,00,000</button>
+                </div>
+
+                <form onsubmit="handleWithdrawSubmit(event)">
+                    <div class="form-group">
+                        <label>Custom Withdrawal Amount (₹)</label>
+                        <input type="number" id="withdraw-amount" min="10000" max="100000" step="500" placeholder="Enter amount (Min ₹10,000, Max ₹1,00,000)" required>
+                    </div>
+                    <p class="rule-hint"><i class="fa-solid fa-circle-info"></i> Minimum: ₹10,000 | Max Single: ₹1,00,000 | Daily Limit: ₹5,00,000</p>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg"><i class="fa-solid fa-check"></i> Dispense Cash</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Deposit -->
+    <div id="modal-deposit" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-vault"></i> Cash Deposit</h3>
+                <button class="close-btn" onclick="closeModal('modal-deposit')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleDepositSubmit(event)">
+                    <div class="form-group">
+                        <label>Deposit Amount (₹)</label>
+                        <input type="number" id="deposit-amount" min="100" step="100" placeholder="Enter amount to deposit" required>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block btn-lg"><i class="fa-solid fa-arrow-down-to-bracket"></i> Confirm Deposit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Transfer -->
+    <div id="modal-transfer" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-paper-plane"></i> Fund Transfer</h3>
+                <button class="close-btn" onclick="closeModal('modal-transfer')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleTransferSubmit(event)">
+                    <div class="form-group">
+                        <label>Recipient Account Number</label>
+                        <input type="text" id="transfer-target-id" placeholder="e.g. 1002" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Transfer Amount (₹)</label>
+                        <input type="number" id="transfer-amount" min="1" step="1" placeholder="Enter amount to transfer" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg"><i class="fa-solid fa-share-nodes"></i> Transfer Funds</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: PIN Change -->
+    <div id="modal-pin" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-key"></i> Change Security PIN</h3>
+                <button class="close-btn" onclick="closeModal('modal-pin')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleChangePinSubmit(event)">
+                    <div class="form-group">
+                        <label>Enter Old PIN</label>
+                        <input type="password" id="pin-old" maxlength="8" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Enter New 8-Digit PIN</label>
+                        <input type="password" id="pin-new" maxlength="8" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New PIN</label>
+                        <input type="password" id="pin-confirm" maxlength="8" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-block btn-lg"><i class="fa-solid fa-shield"></i> Update PIN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5: Transaction Receipt Modal -->
+    <div id="modal-history" class="modal-overlay hidden">
+        <div class="modal-card modal-receipt">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-receipt"></i> Official ATM Mini-Statement</h3>
+                <button class="close-btn" onclick="closeModal('modal-history')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="receipt-paper">
+                    <div class="receipt-header">
+                        <div class="receipt-bank-name">RESERVE BANK OF INDIA</div>
+                        <div class="receipt-title">ATM MINI-STATEMENT RECEIPT</div>
+                        <div class="receipt-divider-thick"></div>
+                        
+                        <div class="receipt-meta-grid">
+                            <div class="meta-item"><span>TERMINAL ID:</span> <strong id="receipt-terminal">RBI-ATM-0491</strong></div>
+                            <div class="meta-item"><span>DATE/TIME:</span> <strong id="receipt-datetime">18/08/2026 11:14</strong></div>
+                            <div class="meta-item"><span>ACCOUNT NO:</span> <strong id="receipt-acc-id">•••• 1001</strong></div>
+                            <div class="meta-item"><span>CARDHOLDER:</span> <strong id="receipt-holder">HIMANSHU</strong></div>
+                        </div>
+
+                        <div class="receipt-divider"></div>
+                        
+                        <div class="receipt-table-header">
+                            <span>DATE / TIME</span>
+                            <span>TXN TYPE</span>
+                            <span class="text-right">AMOUNT</span>
+                            <span class="text-right">BALANCE</span>
+                        </div>
+                        <div class="receipt-divider"></div>
+                    </div>
+
+                    <div id="receipt-items-container" class="receipt-items">
+                        <!-- Dynamic list via JS -->
+                    </div>
+
+                    <div class="receipt-footer">
+                        <div class="receipt-divider"></div>
+                        <div class="receipt-summary-block">
+                            <div class="summary-line">
+                                <span>ACCOUNT STATUS:</span>
+                                <span class="status-active">ACTIVE / SUCCESSFUL</span>
+                            </div>
+                            <div class="summary-line highlight-line">
+                                <span>CLOSING BALANCE:</span>
+                                <strong id="receipt-final-bal">₹21,20,000.00</strong>
+                            </div>
+                        </div>
+                        <div class="receipt-divider-thick"></div>
+                        <p class="receipt-thanks">*** THANK YOU FOR BANKING WITH US ***</p>
+                        <div class="receipt-barcode">www.rbi.org.in</div>
+                    </div>
+                </div>
+                <div class="receipt-actions">
+                    <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / Save PDF</button>
+                    <button class="btn btn-outline-light" onclick="closeModal('modal-history')"><i class="fa-solid fa-xmark"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
