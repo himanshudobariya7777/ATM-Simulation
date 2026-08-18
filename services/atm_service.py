@@ -69,9 +69,9 @@ class ATMService:
     def withdraw(self, account_id: str, amount: float) -> Tuple[bool, float, str]:
         """
         Withdraws cash enforcing withdrawal rules:
-        - Min withdrawal = ₹100
-        - Max per transaction = ₹20,000
-        - Daily cumulative limit = ₹50,000
+        - Min withdrawal = ₹10,000
+        - Max per transaction = ₹1,00,000
+        - Daily cumulative limit = ₹5,00,000
         - Sufficient balance requirement
         """
         if amount < MIN_WITHDRAWAL_AMOUNT:

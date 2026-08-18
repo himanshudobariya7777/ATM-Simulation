@@ -3,6 +3,7 @@ Flask Web Application & REST API Server for ATM Simulation System.
 Serves Web GUI and handles customer/admin API requests.
 """
 
+import os
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from database.db_manager import DatabaseManager
 from services.auth_service import AuthService
@@ -13,7 +14,7 @@ from utils.validators import validate_account_number, validate_pin, validate_amo
 from config import REPORTS_DIR, CURRENCY_SYMBOL
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-app.config['SECRET_KEY'] = 'atm_secret_key_2026_super_secure'
+app.config['SECRET_KEY'] = os.environ.get('ATM_SECRET_KEY', os.urandom(32).hex())
 
 # Initialize Services
 db_mgr = DatabaseManager()
@@ -293,4 +294,4 @@ def download_report(filename):
 
 if __name__ == "__main__":
     print("[START] Starting ATM Simulation Web Application on http://127.0.0.1:5000 ...")
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=os.environ.get("FLASK_DEBUG", "0") == "1")

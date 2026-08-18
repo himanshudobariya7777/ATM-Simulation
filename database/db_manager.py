@@ -130,7 +130,7 @@ class DatabaseManager:
                     """, (acc_id, name, pin_hash, salt, balance, now_ts))
                     
                     # Record initial opening balance transaction
-                    txn_id = f"TXN{now_ts.replace('-', '').replace(':', '').replace(' ', '')}{acc_id}"
+                    txn_id = f"TXN{now_ts.replace('-', '').replace(':', '').replace(' ', '')}{acc_id}INIT"
                     cursor.execute("""
                         INSERT INTO transactions (transaction_id, account_id, type, amount, balance_after, timestamp)
                         VALUES (?, ?, 'DEPOSIT', ?, ?, ?);

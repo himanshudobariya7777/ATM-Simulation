@@ -8,6 +8,7 @@ let activeAccount = null;
 let activeAdmin = null;
 let currentPortal = 'customer';
 let activeLoginField = 'cust-account-id';
+let pinKeypadBuffer = "";
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
